@@ -39,7 +39,7 @@ def telemetry(sid, data):
     # The driving model currently just outputs a constant throttle. Feel free to edit this.
     throttle = 0.2
     print(steering_angle, throttle)
-    send_control(steering_angle, throttle)
+    send_control(0.05, throttle)
 
 
 @sio.on('connect')
@@ -54,7 +54,12 @@ def send_control(steering_angle, throttle):
     'throttle': throttle.__str__()
     }, skip_sid=True)
 
-
+#def send_control(steering_angle, throttle):
+    #sio.emit("steer", data={
+    #'steering_angle': steering_angle.__str__(),
+    #'throttle': throttle.__str__()
+    #}, skip_sid=True)
+    
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument('model', type=str,
