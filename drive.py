@@ -1,6 +1,7 @@
 import argparse
 import base64
 import json
+import cv2
 
 import numpy as np
 import socketio
@@ -31,15 +32,18 @@ def telemetry(sid, data):
     speed = data["speed"]
     # The current image from the center camera of the car
     imgString = data["image"]
-    image = Image.open(BytesIO(base64.b64decode(imgString)))
+    image = Image.open(BytesIO(base64.b64decode(imgString))).convert('RGB')
     image_array = np.asarray(image)
+    image_array = image_array[50:140, 0:320]
+    image_array = cv2.resize(image_array, (64, 64))
+    image_array = image_array / 255.0 - 0.5
     transformed_image_array = image_array[None, :, :, :]
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
     steering_angle = float(model.predict(transformed_image_array, batch_size=1))
     # The driving model currently just outputs a constant throttle. Feel free to edit this.
     throttle = 0.2
     print(steering_angle, throttle)
-    send_control(0.05, throttle)
+    send_control(steering_angle, throttle)
 
 
 @sio.on('connect')
@@ -50,8 +54,8 @@ def connect(sid, environ):
 
 def send_control(steering_angle, throttle):
     sio.emit("steer", data={
-    'steering_angle': steering_angle.__str__(),
-    'throttle': throttle.__str__()
+    'steering_angle': steering_angle.__str__().replace(".", ","),
+    'throttle': throttle.__str__().replace(".", ",")
     }, skip_sid=True)
 
 #def send_control(steering_angle, throttle):
