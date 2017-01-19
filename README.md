@@ -32,3 +32,9 @@ The architecture is a relatively small convolutional neural network. Dropout is 
 # Training
 
 The training is made by using python generators.By using fit_generator function in Keras, it became easy. The batches of 100 images are generated from the original Udacity data with data augmentation techniques, and this is made 20 times per epoch. Training for 4 epochs was enough for a smooth driving.
+
+# Future Plans
+
+1- Make the network as small as possible
+2- Make the model as generalized as possible, try it in real images
+3- Make the car as fast responding as possible
