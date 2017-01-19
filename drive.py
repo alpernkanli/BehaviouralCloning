@@ -42,7 +42,7 @@ def telemetry(sid, data):
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
     steering_angle = float(model.predict(transformed_image_array, batch_size=1))
     # The driving model currently just outputs a constant throttle. Feel free to edit this.
-    throttle = 0.5
+    throttle = 0.1
     print(steering_angle, throttle)
     send_control(steering_angle, throttle)
 
@@ -55,8 +55,8 @@ def connect(sid, environ):
 
 def send_control(steering_angle, throttle):
     sio.emit("steer", data={
-    'steering_angle': steering_angle.__str__().replace(".", ","),
-    'throttle': throttle.__str__().replace(".", ",")
+    'steering_angle': steering_angle.__str__(),
+    'throttle': throttle.__str__()
     }, skip_sid=True)
 
 #def send_control(steering_angle, throttle):
