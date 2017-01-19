@@ -28,6 +28,7 @@ Data is passed to the model in the training time by a generator, to avoid memory
 # The Architecture of the Model
 The architecture is a relatively small convolutional neural network. Dropout is used to prevent overfitting. Adding regularization did not made a significant change.
 
+![alt tag](https://raw.githubusercontent.com/alpernkanli/BehaviouralCloning/master/model.png)
 # Training
 
 The training is made by using python generators.By using fit_generator function in Keras, it became easy. The batches of 100 images are generated from the original Udacity data with data augmentation techniques, and this is made 20 times per epoch. Training for 4 epochs was enough for a smooth driving.
