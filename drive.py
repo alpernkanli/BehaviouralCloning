@@ -35,7 +35,7 @@ def telemetry(sid, data):
     image = Image.open(BytesIO(base64.b64decode(imgString))).convert('RGB')
     image_array = np.asarray(image)
     image_array = image_array[55:135, 0:320]
-    image_array = cv2.resize(image_array, (64, 64))
+    image_array = cv2.resize(image_array, (32, 32))
     image_array = image_array.astype(np.float32)
     # image_array = image_array / 255.0 - 0.5
     transformed_image_array = image_array[None, :, :, :]
@@ -55,8 +55,8 @@ def connect(sid, environ):
 
 def send_control(steering_angle, throttle):
     sio.emit("steer", data={
-    'steering_angle': steering_angle.__str__(),
-    'throttle': throttle.__str__()
+    'steering_angle': steering_angle.__str__().replace(".", ","),
+    'throttle': throttle.__str__().replace(".", ",")
     }, skip_sid=True)
 
 #def send_control(steering_angle, throttle):
@@ -64,7 +64,7 @@ def send_control(steering_angle, throttle):
     #'steering_angle': steering_angle.__str__(),
     #'throttle': throttle.__str__()
     #}, skip_sid=True)
-    
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument('model', type=str,

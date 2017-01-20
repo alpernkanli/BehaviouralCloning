@@ -11,14 +11,12 @@ from keras.layers.advanced_activations import ELU
 from keras.models import Sequential
 from keras.optimizers import Adam
 
-from keras.utils.visualize_util import plot
-
 
 
 log = pd.read_csv('./data/driving_log.csv')
 
 
-rows, cols, ch = 64, 64, 3
+rows, cols, ch = 32, 32, 3
 batch_size = 100
 split_size = 0.1
 samples_per_epoch = 20000
@@ -26,10 +24,13 @@ angle_offset = 0.27
 validation_samples = 2000
 epoch_count = 4
 
+
+
 log = log.sample(frac=1).reset_index(drop=True)
 
 training_data = log.loc[0:(log.shape[0]*(1.0-split_size)) - 1]
 validation_data = log.loc[log.shape[0]*(1.0-split_size):]
+
 
 
 # For learning roads with different brightness
@@ -60,6 +61,8 @@ def random_flip(image, angle):
         angle = angle*(-1.0)
     return image, angle
 
+
+
 # 2 more image for every image.
 def augment_and_process(row):
     angle = row['steering']
@@ -87,6 +90,7 @@ def augment_and_process(row):
     image = image.astype(np.float32)
     return image, angle
 
+
 def batch_generator(data):
     batch_count = data.shape[0] // batch_size
     i = 0
@@ -105,31 +109,28 @@ def batch_generator(data):
         yield batch_features, batch_labels
 
 
+
 def the_model():
     model = Sequential()
     
     model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(rows, cols, ch)))
-    model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode='same'))
-    model.add(ELU())
     
-    model.add(Convolution2D(16, 3, 3, subsample=(1, 1), border_mode='valid'))
+    model.add(Convolution2D(32, 3, 3, subsample=(1, 1), border_mode='same'))
     model.add(ELU())
-    model.add(Dropout(0.4))
-    model.add(MaxPooling2D((2, 2), border_mode='valid'))
+    model.add(MaxPooling2D((2, 2)))
     
-    model.add(Convolution2D(16, 3, 3, subsample=(1, 1), border_mode='valid'))
+    model.add(Convolution2D(16, 3, 3, subsample=(1, 1), border_mode='same'))
     model.add(ELU())
-    model.add(Dropout(0.4))
+    model.add(MaxPooling2D((2, 2)))
     
     model.add(Flatten())
-    model.add(Dense(1024, name='Dense0'))
-    model.add(Dropout(0.3))
+    model.add(Dropout(0.2))
+    
+    model.add(Dense(512, name='Dense0'))
+    model.add(Dropout(0.4))
     model.add(ELU())
     
-    model.add(Dense(512, name='Dense1'))
-    model.add(ELU())
-    
-    model.add(Dense(128, name='Dense2'))
+    model.add(Dense(128, name='Dense1'))
     model.add(ELU())
     
     model.add(Dense(1, name='Out'))
@@ -138,14 +139,16 @@ def the_model():
     return model
 
 
+
 def save_parameters(m):
     m.save_weights('model.h5')
     json_file = open('model.json', mode='w')
     json.dump(m.to_json(), json_file)
 
 
+
 model = the_model()
-plot(model, to_file='model.png', show_shapes=True)
+
 
 
 model.fit_generator(batch_generator(training_data), 
@@ -157,7 +160,5 @@ model.fit_generator(batch_generator(training_data),
 
 
 save_parameters(model)
-
-
 
 
