@@ -55,8 +55,8 @@ def connect(sid, environ):
 
 def send_control(steering_angle, throttle):
     sio.emit("steer", data={
-    'steering_angle': steering_angle.__str__().replace(".", ","),
-    'throttle': throttle.__str__().replace(".", ",")
+    'steering_angle': steering_angle.__str__(),
+    'throttle': throttle.__str__()
     }, skip_sid=True)
 
 #def send_control(steering_angle, throttle):
