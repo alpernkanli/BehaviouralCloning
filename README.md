@@ -26,15 +26,25 @@ Various data augmentation methods are implemented. They are;
 Data is passed to the model in the training time by a generator, to avoid memory issues.  
 
 # The Architecture of the Model
-The architecture is a relatively small convolutional neural network. Dropout is used to prevent overfitting. Adding regularization did not made a significant change.
+
+The architecture is a small convolutional neural network. Dropout is used to prevent overfitting. Adding regularization did not made a significant change.
+
+Architecture is based on most common convolutional neural network pattern in image recognition problems. As in my traffic sign recognition projects, Conv -> Activation -> Pool pattern is repeated two times to extract necessary features (two linnes actually), and using two dense layers before the output.
+
+Subsampling is only made in pooling layers. As activation function, ELU is used to overcome "dying ReLU" problem. Using dropout in just after the first dense layer (with more weights!) was enough to prevent overfitting.
+
+The images are resized to 32, and this made the network even smaller.
 
 ![alt tag](https://raw.githubusercontent.com/alpernkanli/BehaviouralCloning/master/model.png)
+
+
 # Training
 
 The training is made by using python generators.By using fit_generator function in Keras, it became easy. The batches of 100 images are generated from the original Udacity data with data augmentation techniques, and this is made 20 times per epoch. Training for 4 epochs was enough for a smooth driving.
 
 # Future Plans
 
-1- Make the network as small as possible
-2- Make the model as generalized as possible, try it in real images
-3- Make the car as fast responding as possible
+1- Make the network as small as possible  
+2- Make the model as generalized as possible, try it in real images  
+3- Make the car as fast responding as possible  
+4- Make the predicted angle sequence as smooth as possible  
