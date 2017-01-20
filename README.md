@@ -29,7 +29,7 @@ Data is passed to the model in the training time by a generator, to avoid memory
 
 The architecture is a small convolutional neural network. Dropout is used to prevent overfitting. Adding regularization did not made a significant change.
 
-Architecture is based on most common convolutional neural network pattern in image recognition problems. As in my traffic sign recognition projects, Conv -> Activation -> Pool pattern is repeated two times to extract necessary features (two linnes actually), and using two dense layers before the output.
+Architecture is based on most common convolutional neural network pattern in image recognition problems. As in my traffic sign recognition projects, Conv -> Activation -> Pool pattern is repeated two times to extract necessary features (two lines actually), and using two dense layers before the output.
 
 Subsampling is only made in pooling layers. As activation function, ELU is used to overcome "dying ReLU" problem. Using dropout in just after the first dense layer (with more weights!) was enough to prevent overfitting.
 
